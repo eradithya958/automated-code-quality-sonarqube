@@ -1,0 +1,93 @@
+name: Automated Code Quality & Static Analysis Quality Gate
+
+on:
+  push:
+    branches: [ main, master, "feature/**", "refactor/**" ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  static-analysis-and-quality-gate:
+    name: Code Quality Gate & Static Analysis Enforcement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for accurate blame and SCM analysis
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Pytest & Generate Coverage Report
+        run: |
+          pytest --cov=src/telemetry_engine --cov-report=xml:coverage.xml --cov-report=term-missing
+
+      - name: Run Standalone Custom AST Static Analyzer (Phase 6)
+        run: |
+          python scripts/custom_ast_analyzer.py --source-dir src/telemetry_engine
+
+      - name: Execute SonarScanner with Quality Gate Enforcement
+        uses: sonarsource/sonarqube-scan-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=network-telemetry-engine
+            -Dsonar.sources=src
+            -Dsonar.tests=tests
+            -Dsonar.python.version=3.11
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.qualitygate.wait=true
+
+      - name: Check Quality Gate Status & Generate PR Summary
+        if: always()
+        run: |
+          python scripts/generate_pr_quality_comment.py
+
+      - name: Post Quality Gate Summary to Pull Request
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            if (fs.existsSync('reports/pr_comment_summary.md')) {
+              const body = fs.readFileSync('reports/pr_comment_summary.md', 'utf8');
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              
+              const botComment = comments.find(comment => 
+                comment.body.includes('<!-- sonarqube-quality-gate-comment -->')
+              );
+              
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: body
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: body
+                });
+              }
+            }

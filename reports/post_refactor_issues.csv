@@ -1,0 +1,17 @@
+key,rule,severity,component,line,message,type,effort,debt,status
+AaD9T2dD9JxkEnUqbYKb,python:S3516,BLOCKER,network-telemetry-engine:src/telemetry_engine/api/routes_telemetry.py,,Refactor this method to not always return the same value.,CODE_SMELL,2min,2min,CLOSED
+AaD9T2dD9JxkEnUqbYKc,python:S3923,MAJOR,network-telemetry-engine:src/telemetry_engine/api/routes_telemetry.py,,Remove this if statement or edit its code blocks so that they're not all the same.,BUG,15min,15min,CLOSED
+AaD9T2c19JxkEnUqbYKT,python:S1192,CRITICAL,network-telemetry-engine:src/telemetry_engine/auth/jwt_handler.py,,"Define a constant instead of duplicating this literal ""Bearer "" 3 times.",CODE_SMELL,6min,6min,CLOSED
+AaD9T2c19JxkEnUqbYKU,python:S3516,BLOCKER,network-telemetry-engine:src/telemetry_engine/auth/jwt_handler.py,,Refactor this method to not always return the same value.,CODE_SMELL,2min,2min,CLOSED
+AaD9T2c19JxkEnUqbYKV,python:S3923,MAJOR,network-telemetry-engine:src/telemetry_engine/auth/jwt_handler.py,,Remove this if statement or edit its code blocks so that they're not all the same.,BUG,15min,15min,CLOSED
+AaD9T2c-9JxkEnUqbYKW,python:S1192,CRITICAL,network-telemetry-engine:src/telemetry_engine/auth/permissions.py,,"Define a constant instead of duplicating this literal ""devices:read"" 5 times.",CODE_SMELL,10min,10min,CLOSED
+AaD9T2c-9JxkEnUqbYKX,python:S1192,CRITICAL,network-telemetry-engine:src/telemetry_engine/auth/permissions.py,,"Define a constant instead of duplicating this literal ""alerts:read"" 3 times.",CODE_SMELL,6min,6min,CLOSED
+AaD9T2c-9JxkEnUqbYKY,python:S1192,CRITICAL,network-telemetry-engine:src/telemetry_engine/auth/permissions.py,,"Define a constant instead of duplicating this literal ""telemetry:read"" 4 times.",CODE_SMELL,8min,8min,CLOSED
+AaD9T2c-9JxkEnUqbYKZ,python:S1192,CRITICAL,network-telemetry-engine:src/telemetry_engine/auth/permissions.py,,"Define a constant instead of duplicating this literal ""telemetry:write"" 3 times.",CODE_SMELL,6min,6min,CLOSED
+AaD9T2c-9JxkEnUqbYKa,python:S5797,CRITICAL,network-telemetry-engine:src/telemetry_engine/auth/permissions.py,,Replace this expression; used as a condition it will always be constant.,CODE_SMELL,2min,2min,CLOSED
+AaD9T2dO9JxkEnUqbYKe,python:S3516,BLOCKER,network-telemetry-engine:src/telemetry_engine/models/device.py,,Refactor this method to not always return the same value.,CODE_SMELL,2min,2min,CLOSED
+AaD9T2dO9JxkEnUqbYKf,python:S3923,MAJOR,network-telemetry-engine:src/telemetry_engine/models/device.py,,Remove this if statement or edit its code blocks so that they're not all the same.,BUG,15min,15min,CLOSED
+AaD9T2dW9JxkEnUqbYKj,python:S3776,CRITICAL,network-telemetry-engine:src/telemetry_engine/services/aggregation_service.py,,Refactor this function to reduce its Cognitive Complexity from 47 to the 15 allowed.,CODE_SMELL,37min,37min,CLOSED
+AaD9T2dW9JxkEnUqbYKk,python:S3516,BLOCKER,network-telemetry-engine:src/telemetry_engine/services/aggregation_service.py,,Refactor this method to not always return the same value.,CODE_SMELL,2min,2min,CLOSED
+AaD9T2dU9JxkEnUqbYKi,python:S1764,MAJOR,network-telemetry-engine:src/telemetry_engine/services/alert_evaluator.py,,"Correct one of the identical sub-expressions on both sides of operator ""and"".",BUG,2min,2min,CLOSED
+AaD9T2dS9JxkEnUqbYKg,python:S5445,CRITICAL,network-telemetry-engine:src/telemetry_engine/utils/file_utils.py,,'tempfile.mktemp' is insecure. Use 'tempfile.TemporaryFile' instead,VULNERABILITY,10min,10min,CLOSED
