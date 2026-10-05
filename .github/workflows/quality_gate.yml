@@ -38,6 +38,7 @@ jobs:
           python scripts/custom_ast_analyzer.py --source-dir src/telemetry_engine
 
       - name: Execute SonarScanner with Quality Gate Enforcement
+        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
         uses: sonarsource/sonarqube-scan-action@v3
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -50,6 +51,11 @@ jobs:
             -Dsonar.python.version=3.11
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.qualitygate.wait=true
+
+      - name: Skip SonarQube Notice
+        if: ${{ secrets.SONAR_TOKEN == '' || secrets.SONAR_HOST_URL == '' }}
+        run: |
+          echo "Notice: SONAR_TOKEN and/or SONAR_HOST_URL secrets are not set in GitHub repository settings. Skipping remote SonarScanner."
 
       - name: Check Quality Gate Status & Generate PR Summary
         if: always()
