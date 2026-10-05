@@ -11,6 +11,13 @@ jobs:
   static-analysis-and-quality-gate:
     name: Code Quality Gate & Static Analysis Enforcement
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
     steps:
       - name: Checkout Repository
@@ -38,11 +45,8 @@ jobs:
           python scripts/custom_ast_analyzer.py --source-dir src/telemetry_engine
 
       - name: Execute SonarScanner with Quality Gate Enforcement
-        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
+        if: env.SONAR_TOKEN != '' && env.SONAR_HOST_URL != ''
         uses: sonarsource/sonarqube-scan-action@v3
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
             -Dsonar.projectKey=network-telemetry-engine
@@ -53,7 +57,7 @@ jobs:
             -Dsonar.qualitygate.wait=true
 
       - name: Skip SonarQube Notice
-        if: ${{ secrets.SONAR_TOKEN == '' || secrets.SONAR_HOST_URL == '' }}
+        if: env.SONAR_TOKEN == '' || env.SONAR_HOST_URL == ''
         run: |
           echo "Notice: SONAR_TOKEN and/or SONAR_HOST_URL secrets are not set in GitHub repository settings. Skipping remote SonarScanner."
 
